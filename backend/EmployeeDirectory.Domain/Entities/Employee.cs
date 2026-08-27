@@ -4,7 +4,7 @@ using System.Text;
 
 namespace EmployeeDirectory.Domain.Entities
 {
-    internal class Employee
+    public class Employee
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public string EmployeeCode { get; set; } = string.Empty;
@@ -23,4 +23,4 @@ namespace EmployeeDirectory.Domain.Entities
         public ICollection<EmployeeDepartmentHistory> DepartmentHistories { get; set; } = new List<EmployeeDepartmentHistory>();
     }
 }
-}
+

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace EmployeeDirectory.Domain.Entities
 {
-    internal class Department
+    public class Department
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Name { get; set; } = string.Empty;
