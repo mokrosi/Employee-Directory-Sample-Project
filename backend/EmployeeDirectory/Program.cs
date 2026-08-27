@@ -28,6 +28,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

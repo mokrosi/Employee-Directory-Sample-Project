@@ -2,6 +2,7 @@
 using MediatR;
 using EmployeeDirectory.Application.Features.Auth.Commands.RegisterUser;
 using System.Threading.Tasks;
+using EmployeeDirectory.Application.Features.Auth.Queries.LoginUser;
 
 namespace EmployeeDirectory.Controllers;
 
@@ -30,4 +31,21 @@ public class AuthController : ControllerBase
             return BadRequest(new { error = ex.Message });
         }
     }
+
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginUserQuery query)
+    {
+        try
+        {
+            var token = await _mediator.Send(query);
+
+            return Ok(new { message = "login successful", token = token });
+        }
+        catch (Exception ex)
+        {
+            return Unauthorized(new { error = ex.Message });
+        }
+    }
+
 }
