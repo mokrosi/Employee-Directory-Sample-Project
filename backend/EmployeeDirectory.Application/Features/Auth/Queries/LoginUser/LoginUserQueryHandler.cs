@@ -1,45 +1,35 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using EmployeeDirectory.Application.Interfaces;
+﻿using EmployeeDirectory.Application.Interfaces;
 using EmployeeDirectory.Domain.Interfaces;
 using MediatR;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace EmployeeDirectory.Application.Features.Auth.Queries.LoginUser;
 
 public class LoginUserQueryHandler : IRequestHandler<LoginUserQuery, string>
 {
     private readonly IUserRepository _userRepository;
-    private readonly IPasswordHasher _passwordHasher;
-    private readonly IJwtTokenGenerator _jwtTokenGenerator;
+    private readonly IJwtTokenGenerator _jwtProvider;
 
-    public LoginUserQueryHandler(
-        IUserRepository userRepository,
-        IPasswordHasher passwordHasher,
-        IJwtTokenGenerator jwtTokenGenerator)
+    public LoginUserQueryHandler(IUserRepository userRepository, IJwtTokenGenerator jwtProvider)
     {
         _userRepository = userRepository;
-        _passwordHasher = passwordHasher;
-        _jwtTokenGenerator = jwtTokenGenerator;
+        _jwtProvider = jwtProvider;
     }
 
     public async Task<string> Handle(LoginUserQuery request, CancellationToken cancellationToken)
     {
+        // 1. جلب المستخدم بواسطة الإيميل
         var user = await _userRepository.GetByEmailAsync(request.Email);
 
-        if (user == null)
+        if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
         {
-            throw new Exception("Email or password is incorrect.");
+            throw new Exception("بيانات الدخول غير صحيحة.");
         }
 
-        bool isPasswordValid = _passwordHasher.VerifyPassword(request.Password, user.PasswordHash);
-
-        if (!isPasswordValid)
-        {
-            throw new Exception("Email or password is incorrect.");
-        }
-
-        string token = _jwtTokenGenerator.GenerateToken(user);
+        // 3. توليد وإرجاع JWT Token
+        string token = _jwtProvider.GenerateToken(user);
 
         return token;
     }

@@ -2,5 +2,6 @@
   <Project Path="EmployeeDirectory.Application/EmployeeDirectory.Application.csproj" />
   <Project Path="EmployeeDirectory.Domain/EmployeeDirectory.Domain.csproj" />
   <Project Path="EmployeeDirectory.Infrastructure/EmployeeDirectory.Infrastructure.csproj" />
+  <Project Path="EmployeeDirectory.Tests/EmployeeDirectory.Tests.csproj" Id="19c64348-7f87-437e-9872-4951e6c6cfee" />
   <Project Path="EmployeeDirectory/EmployeeDirectory.csproj" />
 </Solution>

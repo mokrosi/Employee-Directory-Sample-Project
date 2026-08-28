@@ -20,32 +20,16 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
     {
-        try
-        {
-            var userId = await _mediator.Send(command);
-
-            return Ok(new { message = "user registered successfully", userId = userId });
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { error = ex.Message });
-        }
+        var userId = await _mediator.Send(command);
+        return Ok(new { message = "Login successful", userId });
     }
 
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginUserQuery query)
     {
-        try
-        {
-            var token = await _mediator.Send(query);
-
-            return Ok(new { message = "login successful", token = token });
-        }
-        catch (Exception ex)
-        {
-            return Unauthorized(new { error = ex.Message });
-        }
+        var token = await _mediator.Send(query);
+        return Ok(new { token });
     }
 
 }

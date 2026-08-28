@@ -1,45 +1,36 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using EmployeeDirectory.Application.Interfaces;
-using EmployeeDirectory.Domain.Entities;
+﻿using EmployeeDirectory.Domain.Entities;
 using EmployeeDirectory.Domain.Interfaces;
 using MediatR;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace EmployeeDirectory.Application.Features.Auth.Commands.RegisterUser;
 
 public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, Guid>
 {
     private readonly IUserRepository _userRepository;
-    private readonly IPasswordHasher _passwordHasher;
 
-    public RegisterUserCommandHandler(IUserRepository userRepository, IPasswordHasher passwordHasher)
+    public RegisterUserCommandHandler(IUserRepository userRepository)
     {
         _userRepository = userRepository;
-        _passwordHasher = passwordHasher;
     }
 
     public async Task<Guid> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
-        bool isUnique = await _userRepository.IsEmailUniqueAsync(request.Email);
-        if (!isUnique)
-        {
-            throw new Exception("Email is already registered ");
-        }
+        var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
-        string hashedPassword = _passwordHasher.HashPassword(request.Password);
-
-        var newUser = new User
+        var user = new User
         {
             Id = Guid.NewGuid(),
             FullName = request.FullName,
             Email = request.Email,
-            PasswordHash = hashedPassword,
+            PasswordHash = passwordHash,
             CreatedAt = DateTime.UtcNow
         };
 
-        await _userRepository.AddAsync(newUser);
+        await _userRepository.AddAsync(user);
 
-        return newUser.Id;
+        return user.Id;
     }
 }
