@@ -1,0 +1,36 @@
+<div class="modal-backdrop">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>{{ isEditing ? 'Edit Department' : 'Create New Department' }}</h3>
+      <button type="button" class="btn-close" (click)="onCancel()">&times;</button>
+    </div>
+
+    <form [formGroup]="departmentForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="deptName">Department Name *</label>
+        <input id="deptName" type="text" formControlName="name" class="form-control"
+          placeholder="e.g. Engineering, Human Resources">
+        <div *ngIf="departmentForm.get('name')?.touched && departmentForm.get('name')?.invalid" class="text-danger">
+          <small *ngIf="departmentForm.get('name')?.hasError('required')">Department name is required.</small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="maxHeadcount">Maximum Headcount (Capacity Limit) *</label>
+        <input id="maxHeadcount" type="number" min="1" formControlName="maxHeadcount" class="form-control"
+          placeholder="e.g. 5">
+        <div *ngIf="departmentForm.get('maxHeadcount')?.touched && departmentForm.get('maxHeadcount')?.invalid"
+          class="text-danger">
+          <small *ngIf="departmentForm.get('maxHeadcount')?.hasError('min')">Must be at least 1.</small>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" (click)="onCancel()" class="btn btn-secondary">Cancel</button>
+        <button type="submit" [disabled]="departmentForm.invalid || isLoading" class="btn btn-primary">
+          {{ isLoading ? 'Saving...' : (isEditing ? 'Update Department' : 'Create Department') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

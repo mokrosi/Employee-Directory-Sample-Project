@@ -1,0 +1,32 @@
+<div class="table-container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>Full Name</th>
+        <th>Email</th>
+        <th>Department</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let emp of employees">
+        <td><strong>{{ emp.employeeCode }}</strong></td>
+        <td>{{ emp.fullName }}</td>
+        <td>{{ emp.email }}</td>
+        <td>{{ emp.departmentName || 'N/A' }}</td>
+        <td class="action-buttons">
+          <button type="button" (click)="onView(emp, $event)" class="btn btn-sm btn-view">
+            View
+          </button>
+          <button type="button" (click)="onTransfer(emp, $event)" class="btn btn-sm btn-transfer">
+            Transfer
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="employees.length === 0">
+        <td colspan="5" class="empty-state">No employees found.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

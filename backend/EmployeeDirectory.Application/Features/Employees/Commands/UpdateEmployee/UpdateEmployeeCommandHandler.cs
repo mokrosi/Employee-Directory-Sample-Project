@@ -1,4 +1,4 @@
-﻿using EmployeeDirectory.Domain.Interfaces;
+using EmployeeDirectory.Domain.Interfaces;
 using MediatR;
 using System;
 using System.Threading;
@@ -21,6 +21,10 @@ public class UpdateEmployeeCommandHandler : IRequestHandler<UpdateEmployeeComman
 
         if (employee == null)
             throw new Exception("Employee not found");
+
+        var isEmailUnique = await _employeeRepository.IsEmailUniqueAsync(request.Email, request.Id);
+        if (!isEmailUnique)
+            throw new Exception("Employee email is already in use.");
 
         employee.FullName = request.FullName;
         employee.Email = request.Email;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -24,11 +24,17 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            new Claim("FullName", user.FullName)
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim("FullName", user.FullName),
+            new Claim(ClaimTypes.Name, user.FullName)
         };
 
-        var secretKey = _configuration["JwtSettings:Secret"] ?? "SuperSecretKeyThatIsVeryLongAndSecure123456789!";
+        var secretKey = _configuration["JwtSettings:Secret"]
+            ?? throw new InvalidOperationException("JWT Secret is not configured in appsettings.json.");
+        var issuer = _configuration["JwtSettings:Issuer"] ?? "EmployeeDirectoryAPI";
+        var audience = _configuration["JwtSettings:Audience"] ?? "EmployeeDirectoryUsers";
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
 
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -38,8 +44,8 @@ public class JwtTokenGenerator : IJwtTokenGenerator
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddHours(2), 
             SigningCredentials = creds,
-            Issuer = "EmployeeDirectoryAPI",
-            Audience = "EmployeeDirectoryUsers"
+            Issuer = issuer,
+            Audience = audience
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();

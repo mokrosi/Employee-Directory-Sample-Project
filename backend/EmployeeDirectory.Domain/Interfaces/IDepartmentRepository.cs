@@ -1,4 +1,4 @@
-﻿using EmployeeDirectory.Domain.Entities;
+using EmployeeDirectory.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,8 +9,9 @@ namespace EmployeeDirectory.Domain.Interfaces
     {
 
         Task<Department> AddAsync(Department department);
-        Task<bool> IsNameUniqueAsync(string name);
+        Task<bool> IsNameUniqueAsync(string name, Guid? excludeDepartmentId = null);
         Task<Department?> GetByIdAsync(Guid id);
         Task<IEnumerable<Department>> GetAllAsync();
+        Task UpdateAsync(Department department);
     }
 }

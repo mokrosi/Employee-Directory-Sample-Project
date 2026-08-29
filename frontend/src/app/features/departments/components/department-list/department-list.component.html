@@ -1,0 +1,11 @@
+<div class="departments-grid">
+  <div *ngIf="departments.length === 0" class="empty-state">
+    <p>No departments found. Click "Add Department" to create one.</p>
+  </div>
+
+  <app-department-card
+    *ngFor="let dept of departments"
+    [department]="dept"
+    (edit)="onEdit($event)">
+  </app-department-card>
+</div>

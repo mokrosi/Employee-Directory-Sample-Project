@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using System;
 using System.Collections.Generic;
 
@@ -10,7 +10,9 @@ public class EmployeeDto
     public string EmployeeCode { get; set; } = string.Empty;
     public string FullName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
+    public Guid DepartmentId { get; set; }
     public string DepartmentName { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
 }
 
 public class PaginatedEmployeeResult

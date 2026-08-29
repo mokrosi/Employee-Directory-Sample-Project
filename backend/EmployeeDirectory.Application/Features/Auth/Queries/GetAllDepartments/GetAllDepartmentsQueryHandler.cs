@@ -1,4 +1,4 @@
-﻿using EmployeeDirectory.Domain.Interfaces;
+using EmployeeDirectory.Domain.Interfaces;
 using MediatR;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,8 @@ public class GetAllDepartmentsQueryHandler : IRequestHandler<GetAllDepartmentsQu
         {
             Id = d.Id,
             Name = d.Name,
-            MaxHeadcount = d.MaxHeadcount
+            MaxHeadcount = d.MaxHeadcount,
+            CurrentHeadcount = d.Employees?.Count ?? 0
         }).ToList();
     }
 }

@@ -1,0 +1,38 @@
+<div class="departments-page">
+  <div class="page-header">
+    <div>
+      <h2>Department Management</h2>
+      <p class="subtitle">Manage company departments and headcount capacity limits</p>
+    </div>
+    <button type="button" (click)="openCreateModal()" class="btn btn-primary btn-add">
+      + Add Department
+    </button>
+  </div>
+
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+
+  <div *ngIf="stateService.error$ | async as error" class="alert alert-danger">
+     {{ error }}
+  </div>
+
+  <div *ngIf="stateService.loading$ | async" class="loading-indicator">
+    Loading departments...
+  </div>
+
+  <app-department-list
+    [departments]="(stateService.departments$ | async) || []"
+    (editDepartment)="openEditModal($event)">
+  </app-department-list>
+
+  <!-- Create / Edit Department Modal -->
+  <app-department-modal
+    *ngIf="isModalOpen"
+    [isEditing]="isEditing"
+    [department]="selectedDepartment"
+    [isLoading]="(stateService.loading$ | async) || false"
+    (save)="onSaveDepartment($event)"
+    (close)="closeModal()">
+  </app-department-modal>
+</div>

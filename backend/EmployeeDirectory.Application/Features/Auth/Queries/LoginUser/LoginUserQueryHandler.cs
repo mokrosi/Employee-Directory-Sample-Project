@@ -1,4 +1,4 @@
-﻿using EmployeeDirectory.Application.Interfaces;
+using EmployeeDirectory.Application.Interfaces;
 using EmployeeDirectory.Domain.Interfaces;
 using MediatR;
 using System;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EmployeeDirectory.Application.Features.Auth.Queries.LoginUser;
 
-public class LoginUserQueryHandler : IRequestHandler<LoginUserQuery, string>
+public class LoginUserQueryHandler : IRequestHandler<LoginUserQuery, string?>
 {
     private readonly IUserRepository _userRepository;
     private readonly IJwtTokenGenerator _jwtProvider;
@@ -18,19 +18,15 @@ public class LoginUserQueryHandler : IRequestHandler<LoginUserQuery, string>
         _jwtProvider = jwtProvider;
     }
 
-    public async Task<string> Handle(LoginUserQuery request, CancellationToken cancellationToken)
+    public async Task<string?> Handle(LoginUserQuery request, CancellationToken cancellationToken)
     {
-        // 1. جلب المستخدم بواسطة الإيميل
-        var user = await _userRepository.GetByEmailAsync(request.Email);
+        var user = await _userRepository.GetByEmailAsync(request.Email.Trim());
 
         if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
         {
-            throw new Exception("بيانات الدخول غير صحيحة.");
+            return null;
         }
 
-        // 3. توليد وإرجاع JWT Token
-        string token = _jwtProvider.GenerateToken(user);
-
-        return token;
+        return _jwtProvider.GenerateToken(user);
     }
 }

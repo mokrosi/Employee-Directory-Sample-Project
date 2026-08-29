@@ -1,0 +1,32 @@
+<div class="table-container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Employee Code</th>
+        <th>Employee Name</th>
+        <th>Employee Email</th>
+        <th>Department</th>
+        <th>Transferred By</th>
+        <th>Date & Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of histories">
+        <td><strong>{{ item.employeeCode }}</strong></td>
+        <td>{{ item.employeeName }}</td>
+        <td>{{ item.employeeEmail }}</td>
+        <td><span class="dept-name">{{ item.departmentName }}</span></td>
+        <td>
+          <div class="user-info">
+            <span class="user-name">{{ item.transferredByName }}</span>
+            <small class="user-email">{{ item.transferredByEmail }}</small>
+          </div>
+        </td>
+        <td>{{ item.transferredAt | date:'medium' }}</td>
+      </tr>
+      <tr *ngIf="histories.length === 0 && !isLoading">
+        <td colspan="6" class="empty-state">No transfer history records found.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

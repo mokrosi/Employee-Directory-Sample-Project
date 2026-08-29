@@ -1,0 +1,59 @@
+<div class="directory-container">
+  <div class="page-header">
+    <div>
+      <h2>Employee Directory</h2>
+      <p class="subtitle">Search, view, create, and transfer company employees</p>
+    </div>
+    <button type="button" (click)="onOpenAddModal()" class="btn btn-primary btn-add">
+      + Add New Employee
+    </button>
+  </div>
+
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+
+  <div *ngIf="stateService.error$ | async as error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div class="search-section">
+    <app-search-bar (searchChange)="onSearchChange($event)"></app-search-bar>
+  </div>
+
+  <div *ngIf="stateService.loading$ | async" class="loading-indicator">
+    Loading records...
+  </div>
+
+  <div class="directory-content">
+    <app-employee-list
+      [employees]="(stateService.employees$ | async) || []"
+      (openViewModal)="onOpenViewModal($event)"
+      (openTransferModal)="onOpenTransferModal($event)">
+    </app-employee-list>
+  </div>
+
+  <!-- Add Employee Modal -->
+  <app-employee-form
+    *ngIf="isAddModalOpen"
+    [departments]="(stateService.departments$ | async) || []"
+    (createEmployee)="onCreateEmployee($event)"
+    (close)="onCloseAddModal()">
+  </app-employee-form>
+
+  <!-- View Profile Modal -->
+  <app-employee-profile-modal
+    *ngIf="viewProfileEmployee"
+    [employee]="viewProfileEmployee"
+    (close)="onCloseViewModal()">
+  </app-employee-profile-modal>
+
+  <!-- Transfer Employee Modal -->
+  <app-transfer-modal
+    *ngIf="transferTargetEmployee"
+    [employee]="transferTargetEmployee"
+    [departments]="(stateService.departments$ | async) || []"
+    (transfer)="onExecuteTransfer($event)"
+    (close)="onCloseTransferModal()">
+  </app-transfer-modal>
+</div>

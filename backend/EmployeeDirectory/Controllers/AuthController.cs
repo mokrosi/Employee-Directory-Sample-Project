@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using EmployeeDirectory.Application.Features.Auth.Commands.RegisterUser;
 using System.Threading.Tasks;
@@ -20,8 +20,19 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
     {
-        var userId = await _mediator.Send(command);
-        return Ok(new { message = "Login successful", userId });
+        try
+        {
+            var userId = await _mediator.Send(command);
+            return Ok(new { message = "Registration successful", userId });
+        }
+        catch (FluentValidation.ValidationException ex)
+        {
+            return BadRequest(new { message = ex.Errors.FirstOrDefault()?.ErrorMessage ?? ex.Message, errors = ex.Errors });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
 
@@ -29,6 +40,10 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginUserQuery query)
     {
         var token = await _mediator.Send(query);
+        if (string.IsNullOrEmpty(token))
+        {
+            return Unauthorized(new { message = "Invalid email or password." });
+        }
         return Ok(new { token });
     }
 

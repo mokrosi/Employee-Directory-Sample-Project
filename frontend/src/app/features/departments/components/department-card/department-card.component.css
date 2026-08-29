@@ -1,0 +1,76 @@
+.department-card {
+  background: #ffffff;
+  border-radius: 0;
+  padding: 1.5rem;
+  box-shadow: none;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.card-header {
+  margin-bottom: 1.25rem;
+}
+
+.dept-title {
+  font-size: 1.2rem;
+  color: #1e293b;
+  font-weight: 600;
+  margin: 0;
+}
+
+.headcount-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  background: #f8fafc;
+  padding: 0.85rem;
+  border-radius: 0;
+  border: 1px solid #f1f5f9;
+  margin-bottom: 1.25rem;
+}
+
+.stat-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-top: 0.2rem;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+.btn {
+  border-radius: 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-edit {
+  background: #f8fafc;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  padding: 0.4rem 0.85rem;
+}
+
+.btn-edit:hover {
+  background: #e2e8f0;
+}

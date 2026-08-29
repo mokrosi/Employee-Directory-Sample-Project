@@ -1,0 +1,23 @@
+<div *ngIf="employee" class="detail-card">
+  <h3>Employee Profile</h3>
+  <div class="profile-info">
+    <p><strong>Code:</strong> {{ employee.employeeCode }}</p>
+    <p><strong>Full Name:</strong> {{ employee.fullName }}</p>
+    <p><strong>Email:</strong> {{ employee.email }}</p>
+    <p><strong>Current Department:</strong> {{ employee.departmentName }}</p>
+  </div>
+
+  <h4>Assignment History</h4>
+  <div class="history-list" *ngIf="history.length > 0; else noHistory">
+    <ul>
+      <li *ngFor="let item of history">
+        <strong>{{ item.departmentName }}</strong> —
+        <span>Transferred by User #{{ item.transferredByUserId }}</span> on
+        <small>{{ item.transferredAt | date:'medium' }}</small>
+      </li>
+    </ul>
+  </div>
+  <ng-template #noHistory>
+    <p class="text-muted">No assignment history recorded.</p>
+  </ng-template>
+</div>

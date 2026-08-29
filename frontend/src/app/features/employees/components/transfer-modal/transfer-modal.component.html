@@ -1,0 +1,38 @@
+<div class="modal-backdrop">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Transfer Employee</h3>
+      <button type="button" class="btn-close" (click)="onCancel()">&times;</button>
+    </div>
+
+    <p class="modal-subtext">Transferring <strong>{{ employee.fullName }}</strong> ({{ employee.employeeCode }})</p>
+
+    <form [formGroup]="transferForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="targetDepartment">Select Target Department</label>
+        <select id="targetDepartment" formControlName="targetDepartmentId" class="form-control">
+          <option value="" disabled>Choose a department</option>
+          <option
+            *ngFor="let dept of departments"
+            [value]="dept.id"
+            [disabled]="isCurrentDepartment(dept)">
+            {{ dept.name }} (Capacity: {{ dept.currentHeadcount ?? 0 }} / {{ dept.maxHeadcount }})
+          </option>
+        </select>
+      </div>
+
+      <div *ngIf="selectedDept" class="capacity-warning">
+        <div *ngIf="isAtCapacity" class="alert alert-danger">
+          Warning: {{ selectedDept.name }} is already at max headcount capacity ({{ selectedDept.maxHeadcount }}).
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" (click)="onCancel()" class="btn btn-secondary">Cancel</button>
+        <button type="submit" [disabled]="transferForm.invalid || isAtCapacity" class="btn btn-primary">
+          Confirm Transfer
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

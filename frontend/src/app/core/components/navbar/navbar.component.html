@@ -1,0 +1,29 @@
+<header class="top-nav">
+  <div class="nav-brand">
+    <span class="brand-icon"></span>
+    <span class="brand-title">Employee Directory</span>
+  </div>
+
+  <nav class="nav-links">
+    <a routerLink="/employees" routerLinkActive="active" class="nav-item">
+      Employees
+    </a>
+    <a routerLink="/departments" routerLinkActive="active" class="nav-item">
+      Departments
+    </a>
+    <a routerLink="/history" routerLinkActive="active" class="nav-item">
+      History
+    </a>
+  </nav>
+
+  <div class="user-session" *ngIf="currentUser$ | async as user; else fallbackUser">
+    <span class="user-name"> {{ user.fullName }}</span>
+    <button (click)="onLogout()" class="btn btn-outline-danger btn-logout">Logout</button>
+  </div>
+
+  <ng-template #fallbackUser>
+    <div class="user-session">
+      <button (click)="onLogout()" class="btn btn-outline-danger btn-logout">Logout</button>
+    </div>
+  </ng-template>
+</header>

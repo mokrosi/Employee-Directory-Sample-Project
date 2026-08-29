@@ -1,4 +1,4 @@
-﻿using EmployeeDirectory.Domain.Entities;
+using EmployeeDirectory.Domain.Entities;
 using EmployeeDirectory.Domain.Interfaces;
 using MediatR;
 using System;
@@ -23,8 +23,8 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, G
         var user = new User
         {
             Id = Guid.NewGuid(),
-            FullName = request.FullName,
-            Email = request.Email,
+            FullName = request.FullName.Trim(),
+            Email = request.Email.Trim().ToLower(),
             PasswordHash = passwordHash,
             CreatedAt = DateTime.UtcNow
         };

@@ -28,9 +28,6 @@ builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddExceptionHandler<EmployeeDirectory.Exceptions.GlobalExceptionHandler>();
-builder.Services.AddProblemDetails();
-
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<AuthDbContext>(options =>
@@ -42,8 +39,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddControllers();
 
 
-var secretKey = builder.Configuration["JwtSettings:Secret"] ?? "SuperSecretKeyThatIsVeryLongAndSecure123456789!";
-var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+var jwtSecret = builder.Configuration["JwtSettings:Secret"]
+    ?? throw new InvalidOperationException("JWT Secret is not configured in appsettings.json.");
+var jwtIssuer = builder.Configuration["JwtSettings:Issuer"] ?? "EmployeeDirectoryAPI";
+var jwtAudience = builder.Configuration["JwtSettings:Audience"] ?? "EmployeeDirectoryUsers";
+var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
 
 builder.Services.AddAuthentication(options =>
 {
@@ -52,19 +52,30 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = false; 
+    options.RequireHttpsMetadata = false;
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = key,
         ValidateIssuer = true,
-        ValidIssuer = "EmployeeDirectoryAPI",
+        ValidIssuer = jwtIssuer,
         ValidateAudience = true,
-        ValidAudience = "EmployeeDirectoryUsers",
-        ValidateLifetime = true, 
+        ValidAudience = jwtAudience,
+        ValidateLifetime = true,
         ClockSkew = TimeSpan.Zero
     };
+});
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
 });
 
 
@@ -92,12 +103,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowAngularApp");
+
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseExceptionHandler();
 
 app.Run();

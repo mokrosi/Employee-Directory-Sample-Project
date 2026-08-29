@@ -1,4 +1,4 @@
-﻿using EmployeeDirectory.Domain.Entities;
+using EmployeeDirectory.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeDirectory.Infrastructure.Data;
@@ -25,11 +25,19 @@ public class AppDbContext : DbContext
             entity.Property(d => d.MaxHeadcount).IsRequired();
         });
 
+        // User Configuration
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.ToTable("Users");
+            entity.HasKey(u => u.Id);
+        });
+
         // Employee Configuration
         modelBuilder.Entity<Employee>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => e.EmployeeCode).IsUnique();
+            entity.HasIndex(e => e.Email).IsUnique();
             entity.Property(e => e.FullName).IsRequired().HasMaxLength(150);
             entity.Property(e => e.Email).IsRequired().HasMaxLength(200);
 
@@ -38,8 +46,7 @@ public class AppDbContext : DbContext
                   .HasForeignKey(e => e.DepartmentId)
                   .OnDelete(DeleteBehavior.Restrict);
 
-
-            entity.HasOne<User>()
+            entity.HasOne(e => e.CreatedByUser)
                   .WithMany()
                   .HasForeignKey(e => e.CreatedByUserId)
                   .OnDelete(DeleteBehavior.Restrict);
@@ -63,7 +70,7 @@ public class AppDbContext : DbContext
                   .HasForeignKey(h => h.DepartmentId)
                   .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasOne<User>()
+            entity.HasOne(h => h.TransferredByUser)
                   .WithMany()
                   .HasForeignKey(h => h.TransferredByUserId)
                   .OnDelete(DeleteBehavior.Restrict);

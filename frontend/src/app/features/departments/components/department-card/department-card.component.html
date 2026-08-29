@@ -1,0 +1,24 @@
+<div class="department-card" *ngIf="department">
+  <div class="card-header">
+    <h3 class="dept-title">{{ department.name }}</h3>
+  </div>
+
+  <div class="card-body">
+    <div class="headcount-stats">
+      <div class="stat-box">
+        <span class="stat-label">Active Employees</span>
+        <span class="stat-value">{{ department.currentHeadcount ?? 0 }}</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-label">Max Capacity</span>
+        <span class="stat-value">{{ department.maxHeadcount }}</span>
+      </div>
+    </div>
+
+    <div class="card-actions">
+      <button type="button" (click)="onEdit()" class="btn btn-sm btn-edit">
+        Edit Department
+      </button>
+    </div>
+  </div>
+</div>

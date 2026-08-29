@@ -1,0 +1,24 @@
+<div class="history-page">
+  <div class="page-header">
+    <div>
+      <h2>Department Assignment History</h2>
+      <p class="subtitle">Complete audit log of all employee department assignments and transfers</p>
+    </div>
+    <button type="button" (click)="onRefresh()" class="btn btn-secondary btn-refresh">
+      Refresh History
+    </button>
+  </div>
+
+  <div *ngIf="stateService.error$ | async as error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="stateService.loading$ | async" class="loading-indicator">
+    Loading transfer history...
+  </div>
+
+  <app-history-list
+    [histories]="(stateService.history$ | async) || []"
+    [isLoading]="(stateService.loading$ | async) || false">
+  </app-history-list>
+</div>

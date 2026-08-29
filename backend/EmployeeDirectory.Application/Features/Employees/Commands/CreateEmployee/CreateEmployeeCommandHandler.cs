@@ -1,4 +1,4 @@
-﻿using EmployeeDirectory.Application.Interfaces;
+using EmployeeDirectory.Application.Interfaces;
 using EmployeeDirectory.Domain.Entities;
 using EmployeeDirectory.Domain.Interfaces;
 using MediatR;
@@ -29,7 +29,11 @@ public class CreateEmployeeCommandHandler : IRequestHandler<CreateEmployeeComman
     {
         var isUnique = await _employeeRepository.IsEmployeeCodeUniqueAsync(request.EmployeeCode);
         if (!isUnique)
-            throw new Exception("Code is already in use.");
+            throw new Exception("Employee code is already in use.");
+
+        var isEmailUnique = await _employeeRepository.IsEmailUniqueAsync(request.Email);
+        if (!isEmailUnique)
+            throw new Exception("Employee email is already in use.");
 
         var department = await _departmentRepository.GetByIdAsync(request.DepartmentId);
         if (department == null)

@@ -1,4 +1,4 @@
-﻿using EmployeeDirectory.Domain.Interfaces;
+using EmployeeDirectory.Domain.Interfaces;
 using MediatR;
 using System;
 using System.Linq;
@@ -31,10 +31,14 @@ public class GetEmployeeByIdQueryHandler : IRequestHandler<GetEmployeeByIdQuery,
             EmployeeCode = employee.EmployeeCode,
             FullName = employee.FullName,
             Email = employee.Email,
-            CurrentDepartment = employee.Department?.Name ?? "No Department",
+            DepartmentId = employee.DepartmentId,
+            DepartmentName = employee.Department?.Name ?? "No Department",
             History = employee.DepartmentHistories.Select(h => new DepartmentHistoryDto
             {
+                Id = h.Id,
+                DepartmentId = h.DepartmentId,
                 DepartmentName = h.Department?.Name ?? "Unknown",
+                TransferredByUserId = h.TransferredByUserId,
                 TransferredAt = h.TransferredAt
             }).OrderByDescending(h => h.TransferredAt).ToList()
         };

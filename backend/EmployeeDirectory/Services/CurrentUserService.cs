@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Security.Claims;
 using EmployeeDirectory.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -18,10 +18,15 @@ public class CurrentUserService : ICurrentUserService
     {
         get
         {
-            var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)
-                              ?? _httpContextAccessor.HttpContext?.User?.FindFirst("sub");
+            var user = _httpContextAccessor.HttpContext?.User;
+            if (user == null) return Guid.Empty;
 
-            if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out var userId))
+            var claim = user.FindFirst(ClaimTypes.NameIdentifier)
+                     ?? user.FindFirst("sub")
+                     ?? user.FindFirst("id")
+                     ?? user.FindFirst("nameid");
+
+            if (claim != null && Guid.TryParse(claim.Value, out var userId))
             {
                 return userId;
             }

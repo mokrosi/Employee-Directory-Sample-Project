@@ -1,4 +1,4 @@
-﻿using EmployeeDirectory.Application.Interfaces;
+using EmployeeDirectory.Application.Interfaces;
 using EmployeeDirectory.Domain.Entities;
 using EmployeeDirectory.Domain.Interfaces;
 using MediatR;
@@ -39,17 +39,16 @@ public class TransferEmployeeCommandHandler : IRequestHandler<TransferEmployeeCo
         if (currentHeadcount >= newDepartment.MaxHeadcount)
             throw new Exception($"Sorry, the new department has reached its maximum capacity ({newDepartment.MaxHeadcount}). The employee cannot be transferred there.");
 
-        employee.DepartmentId = request.NewDepartmentId;
-
-        employee.DepartmentHistories.Add(new EmployeeDepartmentHistory
+        var history = new EmployeeDepartmentHistory
         {
             Id = Guid.NewGuid(),
+            EmployeeId = employee.Id,
             DepartmentId = request.NewDepartmentId,
-            TransferredByUserId = _currentUserService.UserId,
+            TransferredByUserId = _currentUserService.UserId != Guid.Empty ? _currentUserService.UserId : employee.CreatedByUserId,
             TransferredAt = DateTime.UtcNow
-        });
+        };
 
-        await _employeeRepository.UpdateAsync(employee);
+        await _employeeRepository.TransferAsync(employee.Id, request.NewDepartmentId, history);
         return true;
     }
 }

@@ -1,4 +1,4 @@
-﻿using EmployeeDirectory.Domain.Interfaces;
+using EmployeeDirectory.Domain.Interfaces;
 using MediatR;
 using System.Linq;
 using System.Threading;
@@ -28,7 +28,9 @@ public class SearchEmployeesQueryHandler : IRequestHandler<SearchEmployeesQuery,
             EmployeeCode = e.EmployeeCode,
             FullName = e.FullName,
             Email = e.Email,
-            DepartmentName = e.Department?.Name ?? "No department"
+            DepartmentId = e.DepartmentId,
+            DepartmentName = e.Department?.Name ?? "No department",
+            CreatedAt = e.CreatedAt
         }).ToList();
 
         return new PaginatedEmployeeResult

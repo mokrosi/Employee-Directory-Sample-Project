@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,11 +27,13 @@ public class UserRepository : IUserRepository
 
     public async Task<bool> IsEmailUniqueAsync(string email)
     {
-        return !await _context.Users.AnyAsync(u => u.Email == email);
+        var normalized = email.Trim().ToLower();
+        return !await _context.Users.AsNoTracking().AnyAsync(u => u.Email.ToLower() == normalized);
     }
 
     public async Task<User?> GetByEmailAsync(string email)
     {
-        return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        var normalized = email.Trim().ToLower();
+        return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email.ToLower() == normalized);
     }
 }

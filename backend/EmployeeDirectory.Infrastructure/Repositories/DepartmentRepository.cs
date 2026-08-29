@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using EmployeeDirectory.Domain.Entities;
@@ -25,18 +25,26 @@ public class DepartmentRepository : IDepartmentRepository
     }
 
 
-    public async Task<bool> IsNameUniqueAsync(string name)
+    public async Task<bool> IsNameUniqueAsync(string name, Guid? excludeDepartmentId = null)
     {
-        return !await _context.Departments.AnyAsync(d => d.Name == name);
+        var normalizedName = name.Trim().ToLower();
+        return !await _context.Departments.AnyAsync(d =>
+            d.Name.ToLower() == normalizedName &&
+            (!excludeDepartmentId.HasValue || d.Id != excludeDepartmentId.Value));
     }
 
     public async Task<Department?> GetByIdAsync(Guid id)
     {
-        return await _context.Departments.FindAsync(id);
+        return await _context.Departments.Include(d => d.Employees).FirstOrDefaultAsync(d => d.Id == id);
     }
 
     public async Task<IEnumerable<Department>> GetAllAsync()
     {
-        return await _context.Departments.ToListAsync();
+        return await _context.Departments.Include(d => d.Employees).ToListAsync();
+    }
+
+    public async Task UpdateAsync(Department department)
+    {
+        await _context.SaveChangesAsync();
     }
 }
